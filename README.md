@@ -1,7 +1,7 @@
 # AI Workout Wizard
 
 <p align="center">
-  <img src="public/ai-workout-wizard.png" alt="animated" />
+  <img src="public/demo.png" />
 </p>
 
 A project to generate your weekly workout plan with either OpenAI GPT model or Google PaLM API. 
