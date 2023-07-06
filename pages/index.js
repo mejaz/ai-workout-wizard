@@ -26,7 +26,7 @@ export default function Home() {
 						</div>
 						{
 							loading
-								? <div className={'w-full text-center text-white text-secondary-light p-2 text-xl font-normal'}>Working on it...</div>
+								? <div className={'w-full text-center text-secondary-light p-2 text-xl font-normal'}>Working on it...</div>
 								: data.length > 0
 									? <TableToPDF data={data}/>
 									: undefined
