@@ -30,3 +30,5 @@ A project to generate your weekly workout plan with either OpenAI GPT model or G
 ## Contact
 
 mohdejazsiddiqui@gmail.com
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Y8Y618ZETK)
