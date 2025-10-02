@@ -5,7 +5,7 @@ export const getCompletion = async (prompt) => {
 		
 		const apiKey = process.env.OPENAI_API_KEY;
 		
-		console.log('Environment check:', {
+		console.warn('Environment check:', {
 			hasApiKey: !!apiKey,
 			apiKeyLength: apiKey ? apiKey.length : 0,
 			nodeEnv: process.env.NODE_ENV
