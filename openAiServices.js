@@ -1,30 +1,39 @@
 import OpenAI from "openai"
 
-const client = new OpenAI({
-  apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted
-});
-
 const OPEN_AI_CHAT_COMPLETION_MODEL = "gpt-3.5-turbo"
 
-export const getCompletion = async (prompt) => {
+let client = null;
 
-	const completion = await client.chat.completions.create({
-		model: OPEN_AI_CHAT_COMPLETION_MODEL,
-		messages: [{role: "user", content: prompt}],
-	});
-
-	return JSON.parse(completion.choices[0].message.content)
+const getClient = () => {
+	if (!client) {
+		const apiKey = process.env.OPENAI_API_KEY;
+		if (!apiKey) {
+			throw new Error('OPENAI_API_KEY environment variable is not set');
+		}
+		client = new OpenAI({
+			apiKey: apiKey,
+		});
+	}
+	return client;
 }
 
+export const getCompletion = async (prompt) => {
+	try {
+		const openaiClient = getClient();
+		
+		const completion = await openaiClient.chat.completions.create({
+			model: OPEN_AI_CHAT_COMPLETION_MODEL,
+			messages: [{role: "user", content: prompt}],
+		});
 
-// const OPEN_AI_COMPLETION_MODEL = "text-davinci-003"
-//
-// export const getCompletion = async (prompt) => {
-// 	const completion = await openai.createCompletion({
-// 		model: OPEN_AI_COMPLETION_MODEL,
-// 		prompt: prompt,
-// 		max_tokens: 2000,
-// 		temperature: 0.7
-// 	});
-// 	return JSON.parse(completion.data.choices[0].text)
-// }
+		const content = completion.choices[0]?.message?.content;
+		if (!content) {
+			throw new Error('No content received from OpenAI');
+		}
+
+		return JSON.parse(content);
+	} catch (error) {
+		console.error('OpenAI API Error:', error.message);
+		throw new Error(`OpenAI API failed: ${error.message}`);
+	}
+}
