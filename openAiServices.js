@@ -1,28 +1,26 @@
-import OpenAI from "openai"
-
-const OPEN_AI_CHAT_COMPLETION_MODEL = "gpt-3.5-turbo"
-
-let client = null;
-
-const getClient = () => {
-	if (!client) {
+export const getCompletion = async (prompt) => {
+	try {
+		// Dynamic import to ensure environment variables are loaded
+		const { default: OpenAI } = await import("openai");
+		
 		const apiKey = process.env.OPENAI_API_KEY;
+		
+		console.log('Environment check:', {
+			hasApiKey: !!apiKey,
+			apiKeyLength: apiKey ? apiKey.length : 0,
+			nodeEnv: process.env.NODE_ENV
+		});
+		
 		if (!apiKey) {
 			throw new Error('OPENAI_API_KEY environment variable is not set');
 		}
-		client = new OpenAI({
+
+		const client = new OpenAI({
 			apiKey: apiKey,
 		});
-	}
-	return client;
-}
-
-export const getCompletion = async (prompt) => {
-	try {
-		const openaiClient = getClient();
 		
-		const completion = await openaiClient.chat.completions.create({
-			model: OPEN_AI_CHAT_COMPLETION_MODEL,
+		const completion = await client.chat.completions.create({
+			model: "gpt-3.5-turbo",
 			messages: [{role: "user", content: prompt}],
 		});
 
@@ -33,7 +31,11 @@ export const getCompletion = async (prompt) => {
 
 		return JSON.parse(content);
 	} catch (error) {
-		console.error('OpenAI API Error:', error.message);
+		console.error('OpenAI API Error:', {
+			message: error.message,
+			stack: error.stack,
+			apiKeyExists: !!process.env.OPENAI_API_KEY
+		});
 		throw new Error(`OpenAI API failed: ${error.message}`);
 	}
 }
